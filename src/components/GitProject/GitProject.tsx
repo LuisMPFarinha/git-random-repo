@@ -9,7 +9,7 @@ const GitProject = ({repo} : {repo: any}) => {
   else content = <label className='m-auto'>Please select a Language</label>
 
   return (
-    <div className={`flex flex-col mt-5 bg-gray-300 rounded-2xl w-full min-h-30 ${repo.isError && "bg-red-300"}`}>
+    <div className={`flex flex-col mt-5 bg-gray-300 rounded-2xl w-full min-h-30 ${repo.isError && "bg-red-200"}`}>
       {content}
     </div>
   )
