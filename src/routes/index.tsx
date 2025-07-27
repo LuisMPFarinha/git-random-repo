@@ -2,11 +2,13 @@ import DropdownList from '@/components/DropdownList/DropdownList'
 import GitProject from '@/components/GitProject/GitProject'
 import type { Item } from '@/entities/Item'
 import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { getRandRepoByLanguage } from '@/requests/git'
+import { RepoContext } from '@/context/RepoContext'
+import { useQuery } from '@tanstack/react-query'
 
 const App = () => {
+
   const [list, setList] = useState<Array<Item>>([
     { id: 1, name: 'JavaScript', selected: false },
     { id: 2, name: 'Java', selected: false },
@@ -28,25 +30,27 @@ const App = () => {
   })
 
   return (
-    <div className="flex flex-col mt-10 w-70 m-auto">
-      <div className="flex gap-2">
-        <div className="rounded-lg bg-black w-7 h-7"></div>
-        <label>GitHub Repository Finder</label>
+    <RepoContext.Provider value={repo}>
+      <div className="flex flex-col mt-10 w-70 m-auto">
+        <div className="flex gap-2">
+          <div className="rounded-lg bg-black w-7 h-7"></div>
+          <label>GitHub Repository Finder</label>
+        </div>
+        <DropdownList
+          list={list}
+          setList={setList}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+        />
+        <GitProject />
+        <button
+          className={`p-2.5 mt-5 rounded-xl text-white hover:cursor-pointer ${repo.isError ? 'bg-red-500 hover:bg-red-400' : 'bg-black hover:bg-black/90'}`}
+          onClick={() => repo.refetch()}
+        >
+          {repo.isError ? 'Click to retry' : 'Refresh'}
+        </button>
       </div>
-      <DropdownList
-        list={list}
-        setList={setList}
-        selectedItem={selectedItem}
-        setSelectedItem={setSelectedItem}
-      />
-      <GitProject repo={repo} />
-      <button
-        className={`p-2.5 mt-5 rounded-xl text-white hover:cursor-pointer ${repo.isError ? "bg-red-500 hover:bg-red-400" : "bg-black hover:bg-black/90"}`}
-        onClick={() => repo.refetch()}
-      >
-        {repo.isError ? 'Click to retry' : 'Refresh'}
-      </button>
-    </div>
+    </RepoContext.Provider>
   )
 }
 
